@@ -33,6 +33,6 @@ b => Assign symbol  eg: = or :
 
 o => seperator between parameter eg: , or ...
 
-<img src="https://github.com/alirezakoo/Ferestar/blob/main/grammer_image_small.png"  width="400">
+<img src="https://github.com/alirezakoo/FerestarGrammer/blob/master/grammer_image_small.png"  width="400">
 
 ##
