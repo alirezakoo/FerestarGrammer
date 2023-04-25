@@ -57,7 +57,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
 
             // seprate statement and inserted in array
             string[] commandLines = statements.Split(TerminalSymbol.DefaultTerminalSymbols.EndStatement, StringSplitOptions.RemoveEmptyEntries);
-            int line = 0;
+            int line = 1;
             foreach (string command in commandLines)
             {
 
