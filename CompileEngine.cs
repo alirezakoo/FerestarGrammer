@@ -27,13 +27,9 @@ namespace Ferestar.Lib.LexicalCompiler
         //----------------------------------for test statement
         static void Main(string[] args)
         {
-            LexicalAnalyser.AllCompiledLexicalCommand = new CompileResult();
-            StringBuilder statement = new StringBuilder();
-            statement.Append("var1=upload(p1=getData(query='select * from hr.table1',con='server=.,uid=test'),p2=openUrl(url='https://alirezakoo.github.io/'), p3=getPic(user=getUserId(username='alirezakoo')));");
-            statement.Append(@"aab:getpic{usersss:getuserid{username:'55555',pic:getpic{user:getuserid{username:'55555' }} },pic:getpic{user:getuserid{username:'55555',pic:getpic{user:getuserid{username:'55555' }},pic:getpic{user:getuserid{username:getuserid{} }} }}};");
-            statement.Append(@"aab2:abbba{bb:aab};");
-
-            var result = statement.ToString().FrestarCompile();
+            var result = ("var1=upload(p1=getData(query='select * from hr.table1',con='server=.,uid=test'),p2=openUrl(url='https://alirezakoo.github.io/'), p3=getPic(user=getUserId(username='alirezakoo')));" +
+                "aab:getpic{usersss:getuserid{username:'55555',pic:getpic{user:getuserid{username:'55555' }} },pic:getpic{user:getuserid{username:'55555',pic:getpic{user:getuserid{username:'55555' }},pic:getpic{user:getuserid{username:getuserid{} }} }}};" +
+                "aab2:abbba{bb:aab};").FrestarCompile();
             System.Console.ReadKey();
         }
     }

@@ -54,7 +54,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
         {
 
 
-
+            AllCompiledLexicalCommand = new CompileResult();
             // seprate statement and inserted in array
             string[] commandLines = statements.Split(TerminalSymbol.DefaultTerminalSymbols.EndStatement, StringSplitOptions.RemoveEmptyEntries);
             int line = 1;
@@ -94,7 +94,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                     var next = result.CompileLineStatus.ExceptionResult.InnerException;
                     while (next != null)
                     {
-                        System.Console.WriteLine(next.ToString());
+                        System.Console.WriteLine(next.Message.ToString());
                         next = next.InnerException;
                     }
                     System.Console.WriteLine("-------------------------------------------------------");
