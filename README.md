@@ -1,6 +1,5 @@
 # Ferestar
-Frestar is a CFG language grammar which developed with .net and that very useful for execute task and process
-This compiler is able to prioritize nested instructions in order of execution with syntax controller
+Frestar is a CFG language grammar which was developed with .net and that is useful for executing tasks and processes This compiler is able to prioritize nested instructions in order of execution with syntax controller
 
 ## The CFG (Context Free Grammer)
 
