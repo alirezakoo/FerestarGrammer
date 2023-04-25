@@ -1,6 +1,6 @@
 # Ferestar
 Frestar is a CFG language grammar which developed with .net and that very useful for execute task and process
-This compiler is able to prioritize nested instructions in order of execution
+This compiler is able to prioritize nested instructions in order of execution with syntax controller
 
 ## The CFG (Context Free Grammer)
 
@@ -45,12 +45,18 @@ var1:upload{var2:getdata{a:'12'},var3:openurl{url:'http://alireza.com/pp', varpi
 ```
 Or you can write:
 ```c#
-var1=upload(var2=getdata(a='12'),var3=openurl(url='http=//alireza.com/pp', varpic=getpic(user=getuserid(username='alirezakoo'))));
+var1=upload(p1=getData(query='select * from hr.table1',con='server=.,uid=test')),p2=openUrl(url='http=//alireza.com/pp', p3=getPic(user=getUserId(username='alirezakoo'))));
 ```
 and then you can compile your code simply with this code in c#
 ```C#
-var result=(@"val:upload  {my:value {a : ' 12'},url:openurl{url: 'http://alireza.com/pp', pic:getpic{user:getuserid{username:'alirezakoo' }}} };").FrestarCompile();
+var result=(@"var1=upload(p1=getData(query='select * from hr.table1',con='server=.,uid=test')),p2=openUrl(url='http=//alireza.com/pp', p3=getPic(user=getUserId(username='alirezakoo'))));").FrestarCompile();
 ```
-### result:
 
-<img src="https://github.com/alirezakoo/FerestarGrammer/blob/master/frestar.drawio.png"  width="500">
+## Parse tree result:
+
+<img src="https://github.com/alirezakoo/FerestarGrammer/blob/master/frestar.drawio.png"  width="600">
+
+
+## Command priority result:
+
+<img src="https://github.com/alirezakoo/FerestarGrammer/blob/master/ferestar_priority.drawio.png"  width="900">
