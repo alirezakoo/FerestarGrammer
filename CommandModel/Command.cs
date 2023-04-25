@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Ferestar.Lib.LexicalCompiler.CommandModel
 {
     public class Command
     {
         
-
-        public string Id { get; set; }
         private object returnValue;
         public Type ReturnType { get; set; }
         public Command ParentCommand { get; set; }
-        public Lexical LexicalName{ get;set;}
+        public DataContent Function{ get;set;}
 
-        public Command(Lexical LexicalName, List<CommandParameter> parameters, CommandParameter assignToParameter)
+        public Command(DataContent Function, List<CommandParameter> parameters, CommandParameter assignToParameter)
         {
             
-            this.LexicalName = LexicalName;
+            this.Function = Function;
             this.Parameters = parameters;
             this.AssignToParameter = assignToParameter;
         }
@@ -35,7 +32,7 @@ namespace Ferestar.Lib.LexicalCompiler.CommandModel
                 if (ReturnType == value.GetType())
                     returnValue = value;
                 else
-                    throw new InvalidCastException("you can't cast (" + value.GetType().FullName + ") to (" + ReturnType.FullName + ") in parameter name " + LexicalName.Word);
+                    throw new InvalidCastException("you can't cast (" + value.GetType().FullName + ") to (" + ReturnType.FullName + ") in parameter name " + Function.Content);
             }
         }
         public List<CommandParameter> Parameters
@@ -46,29 +43,24 @@ namespace Ferestar.Lib.LexicalCompiler.CommandModel
         
         public CommandParameter AssignToParameter { get; set; }
 
-        public string GetID()
-        {
-            return Id;
-        }
     }
     public class CommandParameter
     {
-        private Lexical value;
-        public string Id { get; set; }
+        private DataContent value;
         public Command Command { get; set; }
-        public Lexical ParameterName { get; set; }
+        public DataContent Name { get; set; }
 
-        public CommandParameter(Lexical ParameterValue, Lexical ParameterName, Command command)
+        public CommandParameter(DataContent ParameterValue, DataContent Name, Command command)
         {
 
             this.value = ParameterValue;
-            this.ParameterName = ParameterName;
+            this.Name = Name;
             this.Command = command;
-            if (this.ParameterValue != null)
-                this.ParameterType = LexicalTools.Utility.GetType(this.ParameterValue.Word);
+            if (this.Value != null)
+                this.DataType = LexicalTools.Utility.GetType(this.Value.Content);
         }
 
-        public Lexical ParameterValue
+        public DataContent Value
         {
             get { return value; }
 
@@ -77,7 +69,7 @@ namespace Ferestar.Lib.LexicalCompiler.CommandModel
 
                 if (value != null)
                 {
-                    string val = value.Word.ToString();
+                    string val = value.Content.ToString();
                     if (val.ToString().Length >= 2)
                         if (val.Substring(0, 1) == TerminalSymbol.DefaultTerminalSymbols.StringRegion && val.Substring(val.Length - 1) == TerminalSymbol.DefaultTerminalSymbols.StringRegion)
                         {
@@ -85,7 +77,7 @@ namespace Ferestar.Lib.LexicalCompiler.CommandModel
 
                             removedval = val.Remove(val.Length - 1);
                             removedval = removedval.Remove(0, 1);
-                            value.Word = removedval;
+                            value.Content = removedval;
                         }
 
                     //if (parameterType == value.GetType())
@@ -96,11 +88,7 @@ namespace Ferestar.Lib.LexicalCompiler.CommandModel
             }
         }
 
-        public Type ParameterType { get; }
-        public string GetID()
-        {
-            return Id;
-        }
+        public Type DataType { get; }
     }
 
 }

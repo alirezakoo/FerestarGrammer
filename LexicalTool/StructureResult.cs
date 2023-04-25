@@ -12,7 +12,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
         private TerminalSymbol terminal_sysntax;
         private readonly string key = "@Var@Ferestar@ABB@";
         private List<string> LexicalWords;
-        private List<Lexical> LexicalObjects;
+        private List<DataContent> LexicalObjects;
         private Dictionary<string, string> ValueDictionary;
         private Dictionary<int, int> MarkOpenAndCloseRegionIndex;
         public string CommandText { get; set; }
@@ -44,8 +44,8 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
             RootVariable = GetTreeCommand(null, 0);
             if (LexicalAnalyser.AllCompiledLexicalCommand.Results.Any())
             {
-                if (LexicalAnalyser.AllCompiledLexicalCommand.Results.Any(x => x.RootVariable.ParameterName.Word == RootVariable.ParameterName.Word && x.LineNumber != LineNumber))
-                    throw new Exception("line:(" + LineNumber + ")  A local " + RootVariable.ParameterName.LexicalType.ToString() + " with name: '" + RootVariable.ParameterName.Word + "' is already defined in this scope \n");
+                if (LexicalAnalyser.AllCompiledLexicalCommand.Results.Any(x => x.RootVariable.Name.Content == RootVariable.Name.Content && x.LineNumber != LineNumber))
+                    throw new Exception("line:(" + LineNumber + ")  A local " + RootVariable.Name.Type.ToString() + " with name: '" + RootVariable.Name.Content + "' is already defined in this scope \n");
 
             }
             LexicalAnalyser.AllCompiledLexicalCommand.AddResult(this);
@@ -196,9 +196,9 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
         /// 
         /// </summary>
         /// <param name="lexical"></param>
-        private List<Lexical> GetLexical(List<string> lexical, out StringBuilder grammar)
+        private List<DataContent> GetLexical(List<string> lexical, out StringBuilder grammar)
         {
-            List<Lexical> words = new List<Lexical>();
+            List<DataContent> words = new List<DataContent>();
             grammar = new StringBuilder("");
             int wordCount = lexical.Count;
             for (int i = 0; i < wordCount; i++)
@@ -206,25 +206,25 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                 string word = lexical[i];
                 if (word == terminal_sysntax.Assign)
                 {
-                    words.Add(new Lexical(lexical[i - 1], LexicalType.VARIABLE));
+                    words.Add(new DataContent(lexical[i - 1], LexicalType.VARIABLE));
                     grammar .Append( "a");
-                    words.Add(new Lexical(word, LexicalType.ASSYGN));
+                    words.Add(new DataContent(word, LexicalType.ASSYGN));
                     grammar.Append("b");
                     if (lexical[i + 1].Contains(key))
                     {
-                        words.Add(new Lexical(ValueDictionary[lexical[i + 1]], LexicalType.VALUE));
+                        words.Add(new DataContent(ValueDictionary[lexical[i + 1]], LexicalType.VALUE));
                         grammar.Append("d");
                     }
                     else
                     {
                         if (lexical[i + 2] == terminal_sysntax.OpenRegion)
                         {
-                            words.Add(new Lexical(lexical[i + 1], LexicalType.FUNCTION_NAME));
+                            words.Add(new DataContent(lexical[i + 1], LexicalType.FUNCTION_NAME));
                             grammar.Append("c");
                         }
                         else
                         {
-                            words.Add(new Lexical(lexical[i + 1], LexicalType.VARIABLE));
+                            words.Add(new DataContent(lexical[i + 1], LexicalType.VARIABLE));
                             grammar.Append("a");
                         }
                     }
@@ -232,30 +232,30 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                 }
                 if (word == terminal_sysntax.OpenRegion)
                 {
-                    words.Add(new Lexical(word, LexicalType.OPEN_REGION));
+                    words.Add(new DataContent(word, LexicalType.OPEN_REGION));
                     grammar.Append("r");
 
                     if (lexical[i + 1] != terminal_sysntax.CloseRegion && lexical[i + 2] != terminal_sysntax.Assign)
                     {
-                        words.Add(new Lexical(string.Empty, LexicalType.VARIABLE));
+                        words.Add(new DataContent(string.Empty, LexicalType.VARIABLE));
                         grammar.Append("a");
-                        words.Add(new Lexical(terminal_sysntax.Assign, LexicalType.ASSYGN));
+                        words.Add(new DataContent(terminal_sysntax.Assign, LexicalType.ASSYGN));
                         grammar.Append("b");
                         if (lexical[i + 1].Contains(key))
                         {
-                            words.Add(new Lexical(ValueDictionary[lexical[i + 1]], LexicalType.VALUE));
+                            words.Add(new DataContent(ValueDictionary[lexical[i + 1]], LexicalType.VALUE));
                             grammar.Append("d");
                         }
                         else
                         {
                             if (lexical[i + 2] == terminal_sysntax.OpenRegion)
                             {
-                                words.Add(new Lexical(lexical[i + 1], LexicalType.FUNCTION_NAME));
+                                words.Add(new DataContent(lexical[i + 1], LexicalType.FUNCTION_NAME));
                                 grammar.Append("c");
                             }
                             else
                             {
-                                words.Add(new Lexical(lexical[i + 1], LexicalType.VARIABLE));
+                                words.Add(new DataContent(lexical[i + 1], LexicalType.VARIABLE));
                                 grammar.Append("a");
                             }
                         }
@@ -264,35 +264,35 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                 }
                 if (word == terminal_sysntax.CloseRegion)
                 {
-                    words.Add(new Lexical(word, LexicalType.CLOSE_REGION));
+                    words.Add(new DataContent(word, LexicalType.CLOSE_REGION));
                     grammar.Append("w");
                     continue;
                 }
                 if (word == terminal_sysntax.Seprator)
                 {
-                    words.Add(new Lexical(word, LexicalType.PARAMETER_SEPERATO));
+                    words.Add(new DataContent(word, LexicalType.PARAMETER_SEPERATO));
                     grammar.Append("o");
                     if (lexical[i + 2] != terminal_sysntax.Assign)
                     {
-                        words.Add(new Lexical(string.Empty, LexicalType.VARIABLE));
+                        words.Add(new DataContent(string.Empty, LexicalType.VARIABLE));
                         grammar.Append("a");
-                        words.Add(new Lexical(terminal_sysntax.Assign, LexicalType.ASSYGN));
+                        words.Add(new DataContent(terminal_sysntax.Assign, LexicalType.ASSYGN));
                         grammar.Append("b");
                         if (lexical[i + 1].Contains(key))
                         {
-                            words.Add(new Lexical(ValueDictionary[lexical[i + 1]], LexicalType.VALUE));
+                            words.Add(new DataContent(ValueDictionary[lexical[i + 1]], LexicalType.VALUE));
                             grammar.Append("d");
                         }
                         else
                         {
                             if (lexical[i + 2] == terminal_sysntax.OpenRegion)
                             {
-                                words.Add(new Lexical(lexical[i + 1], LexicalType.FUNCTION_NAME));
+                                words.Add(new DataContent(lexical[i + 1], LexicalType.FUNCTION_NAME));
                                 grammar.Append("c");
                             }
                             else
                             {
-                                words.Add(new Lexical(lexical[i + 1], LexicalType.VARIABLE));
+                                words.Add(new DataContent(lexical[i + 1], LexicalType.VARIABLE));
                                 grammar.Append("a");
                             }
                         }
@@ -301,7 +301,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                 }
                 if (word == terminal_sysntax.EndStatement)
                 {
-                    words.Add(new Lexical(word, LexicalType.END_LINE));
+                    words.Add(new DataContent(word, LexicalType.END_LINE));
                     grammar.Append("e");
                     continue;
                 }
@@ -310,7 +310,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
             grammar = grammar.Replace("ld", "v");// v=litral and data eg "aa='hello'"
             grammar = grammar.Replace("la", "s");// s=litral and litral eg "aa=bb"
             grammar = grammar.Replace("lcr", "f");// f=litral and function eg "aa=F("
-            LexicalWords = words.Select(x => x.Word).ToList();
+            LexicalWords = words.Select(x => x.Content).ToList();
             return words;
         }
         /// <summary>
@@ -330,7 +330,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
         /// </summary>
         /// <param name="lexicals"></param>
         /// <param name="grammar">generated per lexical command</param>
-        private void ControlGrammar(StringBuilder grammar, List<Lexical> lexicals)
+        private void ControlGrammar(StringBuilder grammar, List<DataContent> lexicals)
         {
             StringBuilder errorMessage =new StringBuilder(string.Empty);
             if (grammar.Equals(string.Empty))
@@ -357,9 +357,9 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                     {
                         counter += 4;
                         controlRegionStack.Push(counter - 4);
-                        string statement = lexicals[counter - 4].Word + lexicals[counter - 3].Word + lexicals[counter - 2].Word + lexicals[counter - 1].Word;
+                        string statement = lexicals[counter - 4].Content + lexicals[counter - 3].Content + lexicals[counter - 2].Content + lexicals[counter - 1].Content;
                         if (nextItem == 'e')
-                            errorMessage.Append(terminal_sysntax.CloseRegion + " is expected near " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "\n");
+                            errorMessage.Append(terminal_sysntax.CloseRegion + " is expected near " + lexicals[counter - 1].Type.ToString() + " '" + statement + "\n");
 
 
                         if (nextItem == 'w')
@@ -381,16 +381,16 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                         }
                         else
                         {
-                            errorMessage.Append("syntax error near function " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "' " + "\n");
+                            errorMessage.Append("syntax error near function " + lexicals[counter - 1].Type.ToString() + " '" + statement + "' " + "\n");
                         }
                     }
                     else if (item == 'w')
                     {
                         counter++;
-                        string statement = lexicals[counter - 4].Word + lexicals[counter - 3].Word + lexicals[counter - 2].Word + lexicals[counter - 1].Word;
+                        string statement = lexicals[counter - 4].Content + lexicals[counter - 3].Content + lexicals[counter - 2].Content + lexicals[counter - 1].Content;
 
                         if (!controlRegionStack.TryPop(out int opened_index))
-                            errorMessage.Append(terminal_sysntax.CloseRegion + " is expected near " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "'" + "\n");
+                            errorMessage.Append(terminal_sysntax.CloseRegion + " is expected near " + lexicals[counter - 1].Type.ToString() + " '" + statement + "'" + "\n");
                         if (nextItem == 'o')
                         {
 
@@ -406,13 +406,13 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                         }
                         else
                         {
-                            errorMessage.Append("syntax error near close region " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "'" + "\n");
+                            errorMessage.Append("syntax error near close region " + lexicals[counter - 1].Type.ToString() + " '" + statement + "'" + "\n");
                         }
                     }
                     else if (item == 'v')// v=litral and data eg "aa='hello'"
                     {
                         counter += 3;
-                        string statement = lexicals[counter - 3].Word + lexicals[counter - 2].Word + lexicals[counter - 1].Word;
+                        string statement = lexicals[counter - 3].Content + lexicals[counter - 2].Content + lexicals[counter - 1].Content;
                         if (nextItem == 'o')
                         {
 
@@ -425,14 +425,14 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
 
                         else
                         {
-                            errorMessage.Append("syntax error near set data " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "'" + "\n");
+                            errorMessage.Append("syntax error near set data " + lexicals[counter - 1].Type.ToString() + " '" + statement + "'" + "\n");
                         }
 
                     }
                     else if (item == 's')// v=litral and litral eg "aa=bb"
                     {
                         counter += 3;
-                        string statement = lexicals[counter - 3].Word + lexicals[counter - 2].Word + lexicals[counter - 1].Word;
+                        string statement = lexicals[counter - 3].Content + lexicals[counter - 2].Content + lexicals[counter - 1].Content;
                         if (nextItem == 'o')
                         {
 
@@ -445,14 +445,14 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
 
                         else
                         {
-                            errorMessage.Append("syntax error near set data " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "'" + "\n");
+                            errorMessage.Append("syntax error near set data " + lexicals[counter - 1].Type.ToString() + " '" + statement + "'" + "\n");
                         }
 
                     }
                     else if (item == 'o')
                     {
                         counter++;
-                        string statement = lexicals[counter - 5].Word + lexicals[counter - 4].Word + lexicals[counter - 3].Word + lexicals[counter - 2].Word + lexicals[counter - 1].Word;
+                        string statement = lexicals[counter - 5].Content + lexicals[counter - 4].Content + lexicals[counter - 3].Content + lexicals[counter - 2].Content + lexicals[counter - 1].Content;
                         if (nextItem == 'f')
                         {
 
@@ -468,29 +468,29 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                         }
                         else
                         {
-                            errorMessage.Append("syntax error near seprator " + lexicals[counter - 1].LexicalType.ToString() + " '" + statement + "'" + "\n");
+                            errorMessage.Append("syntax error near seprator " + lexicals[counter - 1].Type.ToString() + " '" + statement + "'" + "\n");
                         }
 
                     }
                     else
                     {
-                        errorMessage.Append("syntax error near " + lexicals[counter].LexicalType.ToString() + "'" + lexicals[counter].Word + "'" + "\n");
+                        errorMessage.Append("syntax error near " + lexicals[counter].Type.ToString() + "'" + lexicals[counter].Content + "'" + "\n");
                     }
                 }
                 int start_index = 0;
                 if (controlRegionStack.TryPop(out start_index))
                 {
                     StringBuilder statement = new StringBuilder("");
-                    foreach (Lexical item in lexicals)
+                    foreach (DataContent item in lexicals)
                     {
-                        statement.Append(item.Word);
+                        statement.Append(item.Content);
                     }
-                    errorMessage.Append("syntax error near " + lexicals[start_index].LexicalType.ToString() + " '" + lexicals[start_index].Word + "' not closed region " + terminal_sysntax.CloseRegion + " is expected near '" + statement + "'" + "\n");
+                    errorMessage.Append("syntax error near " + lexicals[start_index].Type.ToString() + " '" + lexicals[start_index].Content + "' not closed region " + terminal_sysntax.CloseRegion + " is expected near '" + statement + "'" + "\n");
                 }
             }
             if (!errorMessage.Equals(string.Empty))
             {
-                throw new Exception("line:(" + LineNumber + ") " + errorMessage.ToString() + "\n", new Exception(string.Join("", lexicals.Select(p => p.Word))));
+                throw new Exception("line:(" + LineNumber + ") " + errorMessage.ToString() + "\n", new Exception(string.Join("", lexicals.Select(p => p.Content))));
             }
         }
         /// <summary>
@@ -511,21 +511,21 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
             {
 
                 //اگر پارامتر های متد تمام شد0 یا دارای پارامتر دیگری است مقدار پارامتر را اختصاص بده
-                if (LexicalObjects[parameter_index + 3].LexicalType == LexicalType.CLOSE_REGION || LexicalObjects[parameter_index + 3].LexicalType == LexicalType.PARAMETER_SEPERATO)
+                if (LexicalObjects[parameter_index + 3].Type == LexicalType.CLOSE_REGION || LexicalObjects[parameter_index + 3].Type == LexicalType.PARAMETER_SEPERATO)
                 {
-                    Lexical lexicalAssigned = LexicalObjects[parameter_index + 2];
-                    if (lexicalAssigned.LexicalType == LexicalType.VALUE)
+                    DataContent lexicalAssigned = LexicalObjects[parameter_index + 2];
+                    if (lexicalAssigned.Type == LexicalType.VALUE)
                     {
                         paramter.Command.Parameters.Add(new CommandParameter(lexicalAssigned, LexicalObjects[parameter_index], null));
                     }
-                    else if (lexicalAssigned.LexicalType == LexicalType.VARIABLE)
+                    else if (lexicalAssigned.Type == LexicalType.VARIABLE)
                     {
                         if (!LexicalAnalyser.AllCompiledLexicalCommand.Results.Any())
-                            throw new Exception("line:(" + LineNumber + ") " + lexicalAssigned.LexicalType.ToString() + " '" + lexicalAssigned.Word + "' undefined in " + LexicalObjects[parameter_index].Word + LexicalObjects[parameter_index + 1].Word + LexicalObjects[parameter_index + 2].Word + LexicalObjects[parameter_index + 3].Word + "\n");
+                            throw new Exception("line:(" + LineNumber + ") " + lexicalAssigned.Type.ToString() + " '" + lexicalAssigned.Content + "' undefined in " + LexicalObjects[parameter_index].Content + LexicalObjects[parameter_index + 1].Content + LexicalObjects[parameter_index + 2].Content + LexicalObjects[parameter_index + 3].Content + "\n");
 
-                        StructureResult assignedRootParameter = LexicalAnalyser.AllCompiledLexicalCommand.Results.Where(x => x.RootVariable.ParameterName.Word == lexicalAssigned.Word).SingleOrDefault();
+                        StructureResult assignedRootParameter = LexicalAnalyser.AllCompiledLexicalCommand.Results.Where(x => x.RootVariable.Name.Content == lexicalAssigned.Content).SingleOrDefault();
                         if (assignedRootParameter == null)
-                            throw new Exception("line:(" + LineNumber + ") " + lexicalAssigned.LexicalType.ToString() + " '" + lexicalAssigned.Word + "' undefined in " + LexicalObjects[parameter_index].Word + LexicalObjects[parameter_index + 1].Word + LexicalObjects[parameter_index + 2].Word + LexicalObjects[parameter_index + 3].Word + "\n");
+                            throw new Exception("line:(" + LineNumber + ") " + lexicalAssigned.Type.ToString() + " '" + lexicalAssigned.Content + "' undefined in " + LexicalObjects[parameter_index].Content + LexicalObjects[parameter_index + 1].Content + LexicalObjects[parameter_index + 2].Content + LexicalObjects[parameter_index + 3].Content + "\n");
                         paramter.Command.Parameters.Add(assignedRootParameter.RootVariable);
 
                     }
