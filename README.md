@@ -1,5 +1,6 @@
 # Ferestar
-Frestar is a CFG language grammar which developed with .net7 and that very useful for execute task and process
+Frestar is a CFG language grammar which developed with .net and that very useful for execute task and process
+This compiler is able to prioritize nested instructions in order of execution
 
 ## The CFG (Context Free Grammer)
 
@@ -35,4 +36,19 @@ o => seperator between parameter eg: , or ...
 
 <img src="https://github.com/alirezakoo/FerestarGrammer/blob/master/grammer_image_small.png"  width="400">
 
-##
+### Sample Code
+
+you can write nested statements with this grammar
+you can write '(' instead of '{' or '=' instead of ':' without any problem
+```
+var1:upload{var2:getdata{a:'12'},var3:openurl{url:'http://alireza.com/pp', varpic:getpic{user:getuserid{username:'alirezakoo'}}}};
+```
+Or you can write:
+```c#
+var1=upload(var2=getdata(a='12'),var3=openurl(url='http=//alireza.com/pp', varpic=getpic(user=getuserid(username='alirezakoo'))));
+```
+and then you can compile your code simply with this code in c#
+```C#
+var result=(@"val:upload  {my:value {a : ' 12'},url:openurl{url: 'http://alireza.com/pp', pic:getpic{user:getuserid{username:'alirezakoo' }}} };").FrestarCompile();
+```
+result:
