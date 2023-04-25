@@ -102,7 +102,7 @@ namespace Ferestar.Lib.LexicalCompiler.LexicalTools
                 }
                 line++;
             }
-
+            System.Console.WriteLine(AllCompiledLexicalCommand.CompileStatus.ExceptionResult.Message);
             return AllCompiledLexicalCommand;
         }
 
